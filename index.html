@@ -2,36 +2,57 @@
 <html>
 <head>
     <title>Online Exam</title>
+    <base target="_self"> <!-- Prevent new tabs -->
     <script>
         let warningCount = 0;
 
-        // Detect when user switches away from the exam
+        // Detect App Switching (Home Button, Recent Apps)
         document.addEventListener("visibilitychange", function() {
             if (document.hidden) {
                 warningCount++;
-                alert("Warning " + warningCount + ": Do not switch apps or tabs! Exam will be auto-submitted after 3 warnings.");
-
+                alert("Warning " + warningCount + ": Do not switch apps! Exam will be auto-submitted after 3 warnings.");
+                
                 if (warningCount >= 3) {
-                    autoSubmitForm();
+                    autoSubmitExam();
                 }
             }
         });
 
-        // Prevent back button navigation
+        function autoSubmitExam() {
+            document.getElementById("examFrame").style.pointerEvents = "none"; // Disable form
+            alert("Your exam has been auto-submitted. Redirecting...");
+            setTimeout(() => {
+                window.location.href = "https://www.microsoft.com"; // Redirect to exit page
+            }, 3000);
+        }
+
+        // Prevent Back Button
         function preventBack() {
             history.pushState(null, "", location.href);
         }
         window.addEventListener("popstate", preventBack);
         preventBack();
 
-        // Auto-submit the form and redirect after 3 warnings
-        function autoSubmitForm() {
-            document.getElementById("examFrame").style.pointerEvents = "none";
-            alert("Your exam has been auto-submitted. Redirecting...");
-            setTimeout(() => {
-                window.location.href = "https://www.microsoft.com"; // Redirect to exit page
-            }, 3000);
+        // Prevent Page Refresh
+        window.addEventListener("beforeunload", function (e) {
+            e.preventDefault();
+            e.returnValue = "";
+        });
+
+        // Force Full-Screen Mode
+        function goFullScreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
         }
+        window.onload = function() {
+            goFullScreen();
+        };
     </script>
 </head>
 <body>
