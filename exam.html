@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Exam</title>
+    <script>
+        let warningCount = 0;
+
+        // Detect when user switches away from the exam
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                warningCount++;
+                alert("Warning " + warningCount + ": Do not switch apps or tabs! Exam will be auto-submitted after 3 warnings.");
+
+                if (warningCount >= 3) {
+                    autoSubmitForm();
+                }
+            }
+        });
+
+        // Prevent back button navigation
+        function preventBack() {
+            history.pushState(null, "", location.href);
+        }
+        window.addEventListener("popstate", preventBack);
+        preventBack();
+
+        // Auto-submit the form and redirect after 3 warnings
+        function autoSubmitForm() {
+            document.getElementById("examFrame").style.pointerEvents = "none";
+            alert("Your exam has been auto-submitted. Redirecting...");
+            setTimeout(() => {
+                window.location.href = "https://www.microsoft.com"; // Redirect to exit page
+            }, 3000);
+        }
+    </script>
+</head>
+<body>
+    <h2>Online Exam - Microsoft Forms</h2>
+    <iframe id="examFrame" 
+            src="https://forms.office.com/r/zkvAFXcRvn" 
+            width="100%" height="800px" frameborder="0">
+        Loading...
+    </iframe>
+</body>
+</html>
