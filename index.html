@@ -6,31 +6,13 @@
     <script>
         let warningCount = 0;
 
-        // Force Full-Screen Mode
-        function goFullScreen() {
-            let elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
-            }
-        }
-
-        // Keep Forcing Full-Screen Mode
-        document.addEventListener("fullscreenchange", function() {
-            if (!document.fullscreenElement) {
-                goFullScreen(); // Re-enter full-screen mode if exited
-            }
-        });
-
+        // Detect App Switching (Home Button, Recent Apps)
         document.addEventListener("visibilitychange", function() {
             if (document.hidden) {
                 warningCount++;
-                alert("Warning " + warningCount + ": Do not switch apps! Exam will be auto-submitted after 2 warnings.");
+                alert("Warning " + warningCount + ": Do not switch apps! Exam will be auto-submitted after 3 warnings.");
                 
-                if (warningCount >= 2) {
+                if (warningCount >= 3) {
                     autoSubmitExam();
                 }
             }
@@ -51,13 +33,23 @@
         window.addEventListener("popstate", preventBack);
         preventBack();
 
-        // Prevent Page Refresh (F5, pull-to-refresh)
+        // Prevent Page Refresh
         window.addEventListener("beforeunload", function (e) {
             e.preventDefault();
             e.returnValue = "";
         });
 
-        // Activate Full-Screen Mode on Page Load
+        // Force Full-Screen Mode
+        function goFullScreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
         window.onload = function() {
             goFullScreen();
         };
